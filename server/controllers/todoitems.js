@@ -10,4 +10,27 @@ module.exports = {
       .then(todoItem => res.status(201).send(todoItem))
       .catch(error => res.status(400).send(error));
   },
+
+  update(req, res) {
+    return TodoItem
+      .findOne({
+        where: {
+          id: req.params.todoItemId,
+          todoId: req.params.todoId,
+        },
+      })
+      .then(todoItem => {
+        if (!todoItem) {
+          return res.status(404).send({
+            message: 'TodoItem Not Found',
+          });
+        }
+
+        return todoItem
+          .update(req.body, { fields: Object.keys(req.body) })
+          .then(updatedTodoItem => res.status(200).send(updatedTodoItem))
+          .catch(error => res.status(400).send(error));
+      })
+      .catch(error => res.status(400).send(error));
+  }
 };
