@@ -32,5 +32,28 @@ module.exports = {
           .catch(error => res.status(400).send(error));
       })
       .catch(error => res.status(400).send(error));
+  },
+
+  destroy(req, res) {
+    return TodoItem
+      .findOne({
+        where: {
+          id: req.params.todoItemId,
+          todoId: req.params.todoId,
+        },
+      })
+      .then(todoItem => {
+        if (!todoItem) {
+          return res.status(404).send({
+            message: 'TodoItem Not Found',
+          });
+        }
+
+        return todoItem
+          .destroy()
+          .then(() => res.status(200).send({ message: 'Todo deleted successfully.' }))
+          .catch(error => res.status(400).send(error));
+      })
+      .catch(error => res.status(400).send(error));
   }
 };
